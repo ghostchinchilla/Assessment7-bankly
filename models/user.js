@@ -9,6 +9,11 @@ class User {
 /** Register user with data. Returns new user data. */
 
   static async register({username, password, first_name, last_name, email, phone}) {
+      // Validate password
+  if (typeof password !== 'string') {
+    throw new ExpressError('Password must be a string', 400);
+  }
+
     const duplicateCheck = await db.query(
       `SELECT username 
         FROM users 
