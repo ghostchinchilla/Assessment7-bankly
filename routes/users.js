@@ -105,4 +105,26 @@ router.delete('/:username', authUser, requireAdmin, async function(
   }
 }); // end
 
+router.post('/login', async function(req, res, next) {
+  try {
+    const { username, password } = req.body;
+
+    // Check if the password is undefined, null, or an empty string
+    if (!password || typeof password !== 'string') {
+      return res.status(400).json({ error: 'Invalid password' });
+    }
+
+    // Convert password to string explicitly if necessary
+    const passwordString = String(password);
+
+    // Proceed with authentication
+    let user = User.authenticate(username, passwordString);
+    const token = createTokenForUser(username, user.admin);
+    return res.json({ token });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+
 module.exports = router;
